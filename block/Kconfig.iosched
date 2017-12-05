@@ -15,7 +15,7 @@ config IOSCHED_NOOP
 config IOSCHED_TEST
 	tristate "Test I/O scheduler"
 	depends on DEBUG_FS
-	default m
+	default n
 	---help---
 	  The test I/O scheduler is a duplicate of the noop scheduler with
 	  addition of test utlity.
@@ -32,6 +32,13 @@ config IOSCHED_DEADLINE
 	  a new point in the service tree and doing a batch of IO from there
 	  in case of expiry.
 
+config IOSCHED_ZEN
+	tristate "Zen I/O scheduler"
+	default y
+	---help---
+	FCFS, dispatches are back-inserted, deadlines ensure fairness.
+        Should work best with devices where there is no travel delay.
+
 config IOSCHED_CFQ
 	tristate "CFQ I/O scheduler"
 	default y
@@ -43,12 +50,38 @@ config IOSCHED_CFQ
 
 	  This is the default I/O scheduler.
 
+config IOSCHED_FIOPS
+	tristate "IOPS based I/O scheduler"
+	default y
+	---help---
+	  This is an IOPS based I/O scheduler. It will try to distribute
+          IOPS equally among all processes in the system. It's mainly for
+          Flash based storage.
+
+config IOSCHED_SIO
+	tristate "Simple I/O scheduler"
+	default y
+	---help---
+	  The Simple I/O scheduler is an extremely simple scheduler,
+	  based on noop and deadline, that relies on deadlines to
+	  ensure fairness. The algorithm does not do any sorting but
+	  basic merging, trying to keep a minimum overhead. It is aimed
+	  mainly for aleatory access devices (eg: flash devices).
+
 config CFQ_GROUP_IOSCHED
 	bool "CFQ Group Scheduling support"
 	depends on IOSCHED_CFQ && BLK_CGROUP
 	default n
 	---help---
 	  Enable group IO scheduling in CFQ.
+
+config IOSCHED_FIOPS
+	tristate "IOPS based I/O scheduler"
+	default y
+	---help---
+	  This is an IOPS based I/O scheduler. It will try to distribute
+          IOPS equally among all processes in the system. It's mainly for
+          Flash based storage.
 
 config IOSCHED_BFQ
 	tristate "BFQ I/O scheduler"
@@ -71,9 +104,36 @@ config CGROUP_BFQIO
 	  filesystem interface.  The name of the subsystem will be
 	  bfqio.
 
+config IOSCHED_TRIPNDROID
+	tristate "Tripndroid"
+	default y
+	---help---
+	  The Trip N Droid scheduler
+
+config IOSCHED_SIOPLUS
+	tristate "Simple I/O scheduler plus"
+	default y
+	---help---
+	  The Simple I/O scheduler is an extremely simple scheduler,
+	  based on noop and deadline, that relies on deadlines to
+	  ensure fairness. The algorithm does not do any sorting but
+	  basic merging, trying to keep a minimum overhead. It is aimed
+	  mainly for aleatory access devices (eg: flash devices).
+
+config IOSCHED_SWITCHER
+	bool "Use Noop while the screen is off"
+	depends on IOSCHED_NOOP
+	---help---
+	  This enables a driver that switches the I/O scheduler for a single
+	  block device to Noop when the screen turns off, and back to its
+	  original I/O scheduler after a delay when the screen is turned back
+	  on. It requires being manually initialized from a different driver
+	  in order to grab the request_queue pointer that should have its I/O
+	  scheduler switched to Noop when the screen turns off.
+
 choice
 	prompt "Default I/O scheduler"
-	default DEFAULT_CFQ
+	default DEFAULT_SIOPLUS
 	help
 	  Select the I/O scheduler which will be used by default for all
 	  block devices.
@@ -83,6 +143,9 @@ choice
 
 	config DEFAULT_CFQ
 		bool "CFQ" if IOSCHED_CFQ=y
+
+	config DEFAULT_FIOPS
+		bool "FIOPS" if IOSCHED_FIOPS=y
 
 	config DEFAULT_BFQ
 		bool "BFQ" if IOSCHED_BFQ=y
@@ -94,8 +157,24 @@ choice
 		  any workload. It also tries to guarantee low latency to
 		  interactive and soft real-time applications.
 
+
 	config DEFAULT_NOOP
 		bool "No-op"
+
+	config DEFAULT_SIO
+		bool "SIO" if IOSCHED_SIO=y
+
+	config DEFAULT_FIOPS
+		bool "FIOPS" if IOSCHED_FIOPS=y
+
+	config DEFAULT_ZEN
+  		bool "ZEN" if IOSCHED_ZEN=y
+
+	config DEFAULT_TRIPNDROID
+		bool "TRIPNDROID" if IOSCHED_TRIPNDROID=y
+
+	config DEFAULT_SIOPLUS
+		bool "SIOPLUS" if IOSCHED_SIOPLUS=y
 
 endchoice
 
@@ -103,9 +182,13 @@ config DEFAULT_IOSCHED
 	string
 	default "deadline" if DEFAULT_DEADLINE
 	default "cfq" if DEFAULT_CFQ
+	default "fiops" if DEFAULT_FIOPS
 	default "bfq" if DEFAULT_BFQ
 	default "noop" if DEFAULT_NOOP
-
+	default "zen" if DEFAULT_ZEN
+	default "sio" if DEFAULT_SIO
+	default "tripndroid" if DEFAULT_TRIPNDROID
+	default "sioplus" if DEFAULT_SIOPLUS
 endmenu
 
 endif

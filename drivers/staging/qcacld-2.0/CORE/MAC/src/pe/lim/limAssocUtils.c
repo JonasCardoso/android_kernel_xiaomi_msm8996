@@ -4323,10 +4323,11 @@ tSirRetStatus limStaSendAddBssPreAssoc( tpAniSirGlobal pMac, tANI_U8 updateEntry
                             GET_IE_LEN_IN_BSS(bssDescription->length),
                             pBeaconStruct);
 
-    if(pMac->lim.gLimProtectionControl != WNI_CFG_FORCE_POLICY_PROTECTION_DISABLE)
+    if (pMac->lim.gLimProtectionControl != WNI_CFG_FORCE_POLICY_PROTECTION_DISABLE) {
         limDecideStaProtectionOnAssoc(pMac, pBeaconStruct, psessionEntry);
         vos_mem_copy(pAddBssParams->bssId, bssDescription->bssId,
                      sizeof(tSirMacAddr));
+    }
 
     // Fill in tAddBssParams selfMacAddr
     vos_mem_copy(pAddBssParams->selfMacAddr,

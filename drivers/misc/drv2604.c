@@ -45,7 +45,7 @@
 #include <linux/err.h>
 #include <linux/clk.h>
 #include <linux/firmware.h>
-#include <drv2604.h>
+#include "drv2604.h"
 
 static struct drv2604_platform_data  drv2604_plat_data = {
 	.GpioEnable = 0,
@@ -368,10 +368,12 @@ static void vibrator_enable(struct timed_output_dev *dev, int value)
 
 	drv2604_stop(pDrv2604data);
 
-	if (value > 0) {
+	if (value > 0) 
+	{
 		wake_lock(&pDrv2604data->wklock);
 
-		if (drv2604_reg_read(pDrv2604data, RATED_VOLTAGE_REG) != actuator.rated_vol) {
+		if (drv2604_reg_read(pDrv2604data, RATED_VOLTAGE_REG) != actuator.rated_vol) 
+		{
 			printk(KERN_INFO "drv2604: Register values reset.\n");
 			drv2604_change_mode(pDrv2604data, WORK_IDLE, DEV_READY);
 			schedule_timeout_interruptible(msecs_to_jiffies(STANDBY_WAKE_DELAY));
@@ -386,18 +388,29 @@ static void vibrator_enable(struct timed_output_dev *dev, int value)
 
 		value = (value > MAX_TIMEOUT)?MAX_TIMEOUT:value;
 		hrtimer_start(&pDrv2604data->timer, ns_to_ktime((u64)value * NSEC_PER_MSEC), HRTIMER_MODE_REL);
-	} else if (value < 0 && value >= -3) {
+	} 
 
-	if (value == -1)
-		pDrv2604data->sequence[0] = 1;
-	else if (value == -2)
-		pDrv2604data->sequence[0] = 3;
-	else
-		pDrv2604data->sequence[0] = 2;
-		wake_lock(&pDrv2604data->wklock);
-		pDrv2604data->should_stop = NO;
-		drv2604_change_mode(pDrv2604data, WORK_SEQ_PLAYBACK, DEV_IDLE);
-		schedule_work(&pDrv2604data->vibrator_work);
+	else if (value < 0 && value >= -3) 
+	{
+
+		if (value == -1)
+		{
+			pDrv2604data->sequence[0] = 1;
+		}
+
+		else if (value == -2)
+		{
+			pDrv2604data->sequence[0] = 3;
+		 }
+
+		else
+		{
+			pDrv2604data->sequence[0] = 2;
+			wake_lock(&pDrv2604data->wklock);
+			pDrv2604data->should_stop = NO;
+			drv2604_change_mode(pDrv2604data, WORK_SEQ_PLAYBACK, DEV_IDLE);
+			schedule_work(&pDrv2604data->vibrator_work);
+		}
 	}
 
 	mutex_unlock(&pDrv2604data->lock);

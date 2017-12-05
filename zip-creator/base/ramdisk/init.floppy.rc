@@ -1,0 +1,65 @@
+# Copyright (c) 2017, Code Aurora Forum. All rights reserved.
+# Init Script for FloppyKernel
+
+on boot
+    # Update cpusets
+    write /dev/cpuset/top-app/cpus 0-3
+    write /dev/cpuset/foreground/cpus 0-3
+    write /dev/cpuset/foreground/boost/cpus 2-3
+    write /dev/cpuset/background/cpus 1-3
+    write /dev/cpuset/system-background/cpus 0-1
+    write /dev/cpuset/camera-daemon/cpus 0,3
+    write /dev/cpuset/camera-daemon/mems 0
+
+on property:sys.boot_completed=1
+    # Interactive tweaks
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy 0
+    write /sys/devices/system/cpu/cpu2/cpufreq/interactive/above_hispeed_delay "19000 1500000:39000 1800000:19000 2300000:39000"
+    write /sys/devices/system/cpu/cpu2/cpufreq/interactive/hispeed_freq 1401600
+    write /sys/devices/system/cpu/cpu2/cpufreq/interactive/io_is_busy 0
+    write /sys/devices/system/cpu/cpu2/cpufreq/interactive/target_loads "85 1600000:90 1900000:70 2300000:95"
+    
+    # Input boost config
+    write /sys/module/cpu_boost/parameters/input_boost_freq "0:960000 1:960000 2:0 3:0"
+    write /sys/module/cpu_boost/parameters/input_boost_ms 200
+
+    # Set big.LITTLE scheduler parameters
+    write /proc/sys/kernel/sched_boost 0
+    write /proc/sys/kernel/sched_upmigrate 45
+    write /proc/sys/kernel/sched_downmigrate 40
+    write /proc/sys/kernel/sched_freq_inc_notify 400000
+    write /proc/sys/kernel/sched_freq_dec_notify 300000
+    write /proc/sys/kernel/sched_spill_nr_run 3
+    write /proc/sys/kernel/sched_init_task_load 100
+    
+    # LMK
+    write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 0
+
+    #Entropy
+    write /proc/sys/kernel/random/read_wakeup_threshold 64
+    write /proc/sys/kernel/random/write_wakeup_threshold 128
+
+    # Set I/O Scheduler
+    write /sys/block/sda/queue/read_ahead_kb 1024
+    write /sys/block/sde/queue/read_ahead_kb 1024
+    write /sys/block/dm-0/queue/read_ahead_kb 1024
+    write /sys/block/dm-1/queue/read_ahead_kb 1024
+
+    # VM Tweaks
+    write /proc/sys/vm/swappiness 60
+    write /proc/sys/vm/vfs_cache_pressure 50
+
+    # Set nice Level to 9
+    write /proc/sys/kernel/sched_upmigrate_min_nice 9
+    
+    # Frame Skip
+    write /sys/devices/soc/900000.qcom,mdss_mdp/skip_frme 80
+    
+    # Try to set sioplus here
+    setprop sys.io.scheduler "sioplus"
+    
+    # Tweak
+    setprop sys.sysctl.extra_free_kbytes 129600
+
+on property:dev.bootcomplete=1
+    setprop sys.io.scheduler "sioplus"

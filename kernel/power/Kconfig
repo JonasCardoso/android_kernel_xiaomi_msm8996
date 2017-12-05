@@ -330,3 +330,37 @@ config PM_SYNC_BEFORE_SUSPEND
 	bool "Sync file systems before suspend"
 	depends on SUSPEND
 	default y
+
+config POWERSUSPEND
+	bool "Power suspend"
+	default y
+	---help---
+	  Call early suspend handlers when the user requested sleep state
+	  changes.
+
+config POWERSUSPEND_DEBUG
+	bool "Powersuspend driver debugging code"
+	depends on POWERSUSPEND
+	help
+	  Output debugging info in dmesg
+
+config SUSPEND_TIME_TIMEKEEPING
+	bool "get suspend time from timekeeping"
+	default y if SUSPEND_TIME
+	---help---
+	  Get the suspend time in suspend from timekeeping for the archs
+	  that don't support persistent clock.
+
+config PM_SYNC_BEFORE_SUSPEND
+	bool "Sync file systems before suspend"
+	depends on PM
+	default n
+
+config QUICK_WAKEUP
+	bool "Quick wakeup"
+	depends on SUSPEND
+	default y
+	---help---
+	  Allow kernel driver to do periodic jobs without resuming the full system
+	  This option can increase battery life on android powered smartphone.
+
