@@ -2394,10 +2394,8 @@ int __sys_recvmmsg(int fd, struct mmsghdr __user *mmsg, unsigned int vlen,
 		return err;
 
 	err = sock_error(sock->sk);
-	if (err) {
-		datagrams = err;
+	if (err)
 		goto out_put;
-	}
 
 	entry = mmsg;
 	compat_entry = (struct compat_mmsghdr __user *)mmsg;
