@@ -137,6 +137,15 @@ static const struct mmc_fixup mmc_fixups[] = {
 	END_FIXUP
 };
 
+#ifdef CONFIG_ASYNC_FSYNC
+static unsigned int perf_degr;
+int emmc_perf_degr(void)
+{
+	return perf_degr;
+}
+#endif
+
+
 /*
  * Given a 128-bit response, decode to our card CSD structure.
  */

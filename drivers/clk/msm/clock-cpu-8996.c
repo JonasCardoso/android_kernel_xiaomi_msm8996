@@ -891,6 +891,45 @@ static void cpu_clock_8996_acd_init(void)
 	spin_unlock_irqrestore(&acd_lock, flags);
 }
 
+#ifdef CONFIG_CPU_FREQ_VDD_LEVELS
+ssize_t vc_get_vdd(char *buf)
+{
+	struct opp *opppoop;
+        struct clk *c5;
+        int i, len = 0, levels;
+
+        c5 = &pwrcl_clk.c;
+        levels = c5->vdd_class->num_levels;
+
+	rcu_read_lock();
+        if (buf) {
+                for(i=1; i < levels; i++) {
+			opppoop = dev_pm_opp_find_freq_exact(get_cpu_device(0),
+				c5->fmax[i], true);
+                        len += sprintf(buf + len, "%umhz: %d mV\n",
+                                (unsigned int)c5->fmax[i]/1000000,
+                                (int)dev_pm_opp_get_voltage(opppoop)/1000 );
+                }
+        }
+
+        c5 = &perfcl_clk.c;
+        levels = c5->vdd_class->num_levels;
+
+        if (buf) {
+                for(i=1; i < levels; i++) {
+			opppoop = dev_pm_opp_find_freq_exact(get_cpu_device(2),
+				c5->fmax[i], true);
+                        len += sprintf(buf + len, "%umhz: %d mV\n",
+                                (unsigned int)c5->fmax[i]/1000000,
+                                (int)dev_pm_opp_get_voltage(opppoop)/1000 );
+                }
+        }
+	rcu_read_unlock();
+
+        return len;
+}
+#endif
+
 static struct clk *logical_cpu_to_clk(int cpu)
 {
 	struct device_node *cpu_node;

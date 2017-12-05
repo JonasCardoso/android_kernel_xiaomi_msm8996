@@ -1,0 +1,50 @@
+sudo: required
+language: c
+script:
+# The build.sh need LZ4 and ubuntu 12.xx not support 'LZ4' officialy
+- sudo add-apt-repository ppa:nathan-renniewaldock/ppa -y
+- sudo apt-get update
+#
+# Travis CI Script by Caio Oliveira aka Caio99BR <caiooliveirafarias0@gmail.com>
+#
+# Toolchain Choice
+# This will clone TeamVee Prebuilt Toolchains in directory described in build.sh
+#
+# Toolchain select here is Google 4.9
+- export ntoolchainbranch="master"
+- git clone -b "${ntoolchainbranch}" "https://bitbucket.org/jonascardoso/toolchain_aarch64" "../Toolchain"
+
+# This will call build.sh with following parameters inside ${nbasebuildsh}:
+#
+# 'export ndevicechoice="#"'
+# 'export nbasebuildsh="${ndevice}${ndevicechoice}${ntoolchain}${nbuild}q""'
+# 'source build.sh <<< "${nbasebuildsh}"'
+# 'export zipfile#="${zipfile}"'
+#
+# ${nclean} = Clean zip "1" and "2" is "Clean Kernel" 
+- nclean="12"
+# ${ntoolchain} = "4" is "Toolchain Choice", "8" is your Toolchain Choice Google
+- ntoolchain="48"
+# "o" is to disable/enable output when building kernel
+- noutput="o"
+# "3" is "Device Choice"
+- ndevice="3"
+# ${nbuild} = "5" is "Build Kernel" and "6" is "Zip the kernel and Modules"
+- nbuild="56"
+# Last "q" is to Exit of Script
+# For Xiaomi MI5 | Gemini
+# ${ndevicechoice} is "Number of Choice under Device Choice"
+- export ndevicechoice="0"
+- export nbasebuildsh="${nclean}${ntoolchain}${ndevice}${ndevicechoice}${nbuild}q"
+- source build.sh <<< "${nbasebuildsh}"
+- export zipfile0="${zipfile}"
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: "tawcLRz5Bm2bgRexze2Zol3pYZqZKe7cwhhDs46TdHMrcrEuMX6bijYTiCYKy/1rLAHr8NGIQOBBF4LXIMouBcQYpzgzlRpFRl6z6NfJOEtXJ3fvyr0JQOOX7QkG7acDnURBHXroI7b+wK4e6f/An9S/1vgSrBKvrYJlQk8OYEt78aOp9GioblvgzfUJx/ZCxvDYSe5dpXuKFBoZyinPuK83ICyWrRViDqVI3JUMo3TPBrTQ/27olNGuoEjZxjU3fATBDc2Im/kZaxoh59OqT4jjKW6i2dDW/GUm5Nl8SxyxRCBCbzGDgCmtXZ4yuqvO5TCsAoPPD4ksZbeywbeHVVViAlsS8majZLedMWwlERL+pW6v9NneaUH+D44881Cq19AepnLq/Oew4F3u6XXqlm69Is3YyJ2WXKqONwa4rbxUyF2hHf2b4bzz7guMtf/MKf/7T4pMKBH6gpRQlD6A9NNS8zhaI5vPzl0B2cPwq9kYPt3DUfWDTxUHi7jztnzja5jk8jXT6DDbNKOqtM7e5In3Hhe0qzbeBYLKyyjwgEoSlsdO6mut6DE4iyRWtbc3MUL+q4O0YDNrvUebuuwxX+PkJwTob0EBlDDLmNpuamhnIFFmjvFWkES86MyId+HGrGrmF2OU6HgAoIITd2FhfYj9Z/C0V00G7cQ2jhCX9eg="
+  file:
+    - "zip-creator/${zipfile0}"
+  on:
+    tags: true
+

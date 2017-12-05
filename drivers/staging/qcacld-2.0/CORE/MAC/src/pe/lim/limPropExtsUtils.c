@@ -215,8 +215,8 @@ limExtractApCapability(tpAniSirGlobal pMac, tANI_U8 *pIE, tANI_U16 ieLen,
             if ( pBeaconStruct->eseTxPwr.present)
                  *localConstraint = pBeaconStruct->eseTxPwr.power_limit;
 
-                 psessionEntry->is_ese_version_ie_present =
-                              pBeaconStruct->is_ese_ver_ie_present;
+            psessionEntry->is_ese_version_ie_present =
+                         pBeaconStruct->is_ese_ver_ie_present;
 #endif
             }
         }

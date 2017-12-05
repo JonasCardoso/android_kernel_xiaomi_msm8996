@@ -132,6 +132,15 @@
 
 static int cpe_debug_mode;
 
+#ifdef CONFIG_SOUND_CONTROL
+struct sound_control {
+	struct snd_soc_codec *snd_control_codec;
+ 	int default_headphones_value;
+	int default_mic_value;
+	int default_earpiece_value;
+} soundcontrol;
+#endif
+
 #define TASHA_MAX_MICBIAS 4
 #define DAPM_MICBIAS1_STANDALONE "MIC BIAS1 Standalone"
 #define DAPM_MICBIAS2_STANDALONE "MIC BIAS2 Standalone"
@@ -5577,7 +5586,7 @@ static int tasha_codec_enable_dec(struct snd_soc_dapm_widget *w,
 				      msecs_to_jiffies(tx_unmute_delay));
 		if (tasha->tx_hpf_work[decimator].hpf_cut_off_freq !=
 							CF_MIN_3DB_150HZ)
-			schedule_delayed_work(
+			queue_delayed_work(system_power_efficient_wq,
 					&tasha->tx_hpf_work[decimator].dwork,
 					msecs_to_jiffies(300));
 		/* apply gain after decimator is enabled */
@@ -8746,7 +8755,6 @@ static const struct soc_enum tasha_ear_pa_gain_enum =
 static const struct snd_kcontrol_new tasha_analog_gain_controls[] = {
 	SOC_ENUM_EXT("EAR PA Gain", tasha_ear_pa_gain_enum,
 		tasha_ear_pa_gain_get, tasha_ear_pa_gain_put),
-
 	SOC_SINGLE_TLV("HPHL Volume", WCD9335_HPH_L_EN, 0, 20, 1,
 		line_gain),
 	SOC_SINGLE_TLV("HPHR Volume", WCD9335_HPH_R_EN, 0, 20, 1,
@@ -13055,6 +13063,75 @@ static struct regulator *tasha_codec_find_ondemand_regulator(
 		name);
 	return NULL;
 }
+ 
+#ifdef CONFIG_SOUND_CONTROL
+void update_headphones_volume_boost(unsigned int vol_headphones_boost)
+{
+	int default_headphones_val = soundcontrol.default_headphones_value;
+	int boosted_headphones_val = default_headphones_val + vol_headphones_boost;
+
+	snd_soc_write(soundcontrol.snd_control_codec,
+ 		WCD9335_CDC_RX1_RX_VOL_CTL, boosted_headphones_val); 
+
+ 	snd_soc_write(soundcontrol.snd_control_codec,
+ 		WCD9335_CDC_RX1_RX_VOL_MIX_CTL, boosted_headphones_val); 
+
+ 	snd_soc_write(soundcontrol.snd_control_codec,
+ 		WCD9335_CDC_RX2_RX_VOL_CTL, boosted_headphones_val); 
+
+ 	snd_soc_write(soundcontrol.snd_control_codec,
+ 		WCD9335_CDC_RX2_RX_VOL_MIX_CTL, boosted_headphones_val); 
+
+ 	snd_soc_write(soundcontrol.snd_control_codec,
+ 		WCD9335_HPH_L_EN, boosted_headphones_val); 
+
+ 	snd_soc_write(soundcontrol.snd_control_codec,
+ 		WCD9335_HPH_R_EN, boosted_headphones_val); 
+
+	pr_info("Sound Control: Boosted Headphones RX1 value %d\n",
+ 		snd_soc_read(soundcontrol.snd_control_codec,
+ 		WCD9335_CDC_RX1_RX_VOL_CTL));
+
+	pr_info("Sound Control: Boosted Headphones RX2 value %d\n",
+		snd_soc_read(soundcontrol.snd_control_codec,
+ 		WCD9335_CDC_RX2_RX_VOL_CTL));
+
+	pr_info("Sound Control: Boosted Headphones HPH_L value %d\n",
+ 		snd_soc_read(soundcontrol.snd_control_codec,
+ 		WCD9335_HPH_L_EN));
+
+	pr_info("Sound Control: Boosted Headphones HPH_R value %d\n",
+		snd_soc_read(soundcontrol.snd_control_codec,
+ 		WCD9335_HPH_R_EN));
+
+}
+
+void update_mic_volume_boost(int vol_mic_boost)
+{
+	int default_mic_val = soundcontrol.default_mic_value;
+	int boosted_mic_val = default_mic_val + vol_mic_boost;
+
+	snd_soc_write(soundcontrol.snd_control_codec,
+ 		WCD9335_CDC_RX0_RX_VOL_CTL, boosted_mic_val);
+
+ 	pr_info("Sound Control: Boosted Primary Mic RX0 value %d\n",
+ 		snd_soc_read(soundcontrol.snd_control_codec,
+ 		WCD9335_CDC_RX0_RX_VOL_CTL));
+}
+
+void update_earpiece_volume_boost(int vol_earpiece_boost)
+{
+	int default_earpiece_val = soundcontrol.default_earpiece_value;
+	int boosted_earpiece_val = default_earpiece_val + vol_earpiece_boost;
+ 
+ 	snd_soc_write(soundcontrol.snd_control_codec,
+ 		WCD9335_CDC_RX0_RX_VOL_MIX_CTL, boosted_earpiece_val);
+
+ 	pr_info("Sound Control: Boosted Earpiece RX0 value %d\n",
+ 		snd_soc_read(soundcontrol.snd_control_codec,
+ 		WCD9335_CDC_RX0_RX_VOL_MIX_CTL));
+}
+#endif
 
 static int tasha_codec_probe(struct snd_soc_codec *codec)
 {
@@ -13065,7 +13142,9 @@ static int tasha_codec_probe(struct snd_soc_codec *codec)
 	int i, ret;
 	void *ptr = NULL;
 	struct regulator *supply;
-
+#ifdef CONFIG_SOUND_CONTROL
+	soundcontrol.snd_control_codec = codec;
+#endif
 	control = dev_get_drvdata(codec->dev->parent);
 
 	dev_info(codec->dev, "%s()\n", __func__);
@@ -13250,7 +13329,17 @@ static int tasha_codec_probe(struct snd_soc_codec *codec)
 	snd_soc_dapm_disable_pin(dapm, "ANC EAR");
 	mutex_unlock(&codec->mutex);
 	snd_soc_dapm_sync(dapm);
-
+#ifdef CONFIG_SOUND_CONTROL
+	/*
+	 * Get the default values during probe
+ 	 */
+	soundcontrol.default_headphones_value = snd_soc_read(codec,
+		WCD9335_CDC_RX1_RX_VOL_MIX_CTL);
+	soundcontrol.default_mic_value = snd_soc_read(codec,
+		WCD9335_CDC_RX0_RX_VOL_CTL);
+ 	soundcontrol.default_earpiece_value = snd_soc_read(codec,
+ 		WCD9335_CDC_RX0_RX_VOL_MIX_CTL);
+#endif
 	return ret;
 
 err_pdata:
