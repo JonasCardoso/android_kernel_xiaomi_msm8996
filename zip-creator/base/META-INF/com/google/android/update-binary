@@ -89,6 +89,15 @@ if [ $? != "0" ]; then
   abort;
 fi;
 
+if [ "$(file_getprop /tmp/anykernel/anykernel.sh do.modules)" == 1 ]; then
+  ui_print " ";
+  ui_print "Pushing modules...";
+  mount -o remount,rw -t auto /system;
+  cp -rf /tmp/anykernel/modules/* /system/lib/modules/;
+  set_perm_recursive 0 0 0755 0644 /system/lib/modules;
+  mount -o remount,ro -t auto /system;
+fi;
+
 if [ "$(file_getprop /tmp/anykernel/anykernel.sh do.cleanup)" == 1 ]; then
   cleanup;
 fi;
