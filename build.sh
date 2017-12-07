@@ -62,7 +62,7 @@ else
 	echo "and the prefix of the chosen toolchain at the end"
 	echo "GCC 4.6 ex. ../arm-eabi-4.6/bin/arm-eabi-"
 	echo
-echo "/home/jonas/Dev/android-toolchain-eabi/bin/arm-eabi-"
+	echo "/home/jonas/Dev/android-toolchain-eabi/bin/arm-eabi-"
 	echo "Stay blank if you want to exit"
 	echo
 	read -p "Place: " CROSS_COMPILE
