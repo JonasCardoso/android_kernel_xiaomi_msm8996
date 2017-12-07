@@ -59,7 +59,9 @@ else
 	fi
 	echo
 	echo "Please specify a location"
-	echo "and the prefix of the chosen toolchain at the end"
+	echo "and the prefix of the chosen toolchai		mkdir ${zipdirout}/modules
+		find . -name *.ko | xargs cp -a --target-directory=${zipdirout}/modules/ &> /dev/null
+${CROSS_COMPILE}strip --strip-unneeded ${zipdirout}/modules/*.kon at the end"
 	echo "GCC 4.6 ex. ../arm-eabi-4.6/bin/arm-eabi-"
 	echo
 	echo "/home/jonas/Dev/android-toolchain-eabi/bin/arm-eabi-"
@@ -198,6 +200,10 @@ then
 		echo "${name}" >> ${zipdirout}/device.prop
 		echo "${variant}" >> ${zipdirout}/device.prop
 		echo "${release}" >> ${zipdirout}/device.prop
+
+		mkdir ${zipdirout}/modules
+		find . -name *.ko | xargs cp -a --target-directory=${zipdirout}/modules/ &> /dev/null
+${CROSS_COMPILE}strip --strip-unneeded ${zipdirout}/modules/*.ko
 
 		cd ${zipdirout}
 		zip -r ${zipfile} * -x .gitignore &> /dev/null
