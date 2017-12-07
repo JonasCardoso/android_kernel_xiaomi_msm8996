@@ -332,6 +332,7 @@ elif [ -e build.sh ]; then
 	_r="Ready to do!"
 	# Main Variables
 	customkernel=FloppyKernel
+	romversion=HMP
 	export ARCH=arm64
 
 	while true
@@ -392,7 +393,7 @@ elif [ -e build.sh ]; then
 		release=$(date +%d""%m""%Y)
 		build=$(cat .version)
 		#export zipfile="${customkernel}-${name}-${variant}-${release}-${build}.zip"
-		export zipfile="${customkernel}-${name}-${variant}-${release}-${ToolchainName}.zip"
+		export zipfile="${customkernel}-${name}-${variant}-${release}-${ToolchainName}-${romversion}.zip"
 		buildsh
 	done
 else
