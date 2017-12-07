@@ -332,7 +332,7 @@ elif [ -e build.sh ]; then
 	_r="Ready to do!"
 	# Main Variables
 	customkernel=FloppyKernel
-	romversion=HMP
+	romversion=MIUI
 	export ARCH=arm64
 
 	while true
