@@ -18,7 +18,9 @@ on property:persist.spectrum.profile=0
 
 	#Set governor Interactive governor for the LITTLE and BIG cluster
 		write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "interactive"
+		write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor "interactive"
 		write /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor "interactive"
+		write /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor "interactive"
 
 	#Set the maximum frequency to 1593MHz for the LITTLE cluster
 		write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1593600 
@@ -201,7 +203,9 @@ on property:persist.spectrum.profile=1
 
 	#Set governor Interactive governor for the LITTLE and BIG cluster
 		write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "interactive"
+		write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor "interactive"
 		write /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor "interactive"
+		write /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor "interactive"
 
 	#Set the maximum frequency to 1593MHz for the LITTLE cluster
 		write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1593600 
@@ -393,7 +397,9 @@ on property:persist.spectrum.profile=2
 
 	#Set governor Interactive governor for the LITTLE and BIG cluster
 		write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "interactive"
+		write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor "interactive"
 		write /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor "interactive"
+		write /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor "interactive"
 
 	#Set the maximum frequency to 1593MHz for the LITTLE cluster
 		write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1593600 
@@ -585,7 +591,9 @@ on property:persist.spectrum.profile=3
 
 	#Set governor Interactive governor for the LITTLE and BIG cluster
 		write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "interactive"
+		write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor "interactive"
 		write /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor "interactive"
+		write /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor "interactive"
 
 	#Set the maximum frequency to 1593MHz for the LITTLE cluster
 		write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1593600 

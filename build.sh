@@ -19,13 +19,16 @@ _variant=${variant}
 _defconfig=${defconfig}
 unset name variant defconfig
 clear
-echo "0) ${bldyel}Xiaomi Mi5${txtrst} | Lite/Prime/Pro | Gemini"
+echo "0) ${bldred}Xiaomi Mi5${txtrst} | Lite/Prime/Pro | Gemini"
+echo
+echo "1) ${bldyel}Xiaomi Mi5S${txtrst} | Lite/Prime/Pro | Capricorn"
 echo
 echo "*) Any other key to Exit"
 echo
 read -p "Choice: " -n 1 -s x
 case "${x}" in
 	0 ) defconfig="gemini_defconfig"; name="Mi5"; variant="Lite-Prime-Pro";;
+	1 ) defconfig="capricorn_defconfig"; name="Mi5S"; variant="Lite-Prime-Pro";;
 	* ) ;;
 esac
 if [ "${defconfig}" == "" ]
