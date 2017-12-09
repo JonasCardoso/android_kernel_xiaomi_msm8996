@@ -201,7 +201,7 @@ then
 
 		mkdir ${zipdirout}/modules
 		find . -name *.ko | xargs cp -a --target-directory=${zipdirout}/modules/ &> /dev/null
-${CROSS_COMPILE}strip --strip-unneeded ${zipdirout}/modules/*.ko
+		${CROSS_COMPILE}strip --strip-unneeded ${zipdirout}/modules/*.ko
 
 		cd ${zipdirout}
 		zip -r ${zipfile} * -x .gitignore &> /dev/null
