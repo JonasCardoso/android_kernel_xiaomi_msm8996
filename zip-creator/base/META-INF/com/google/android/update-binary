@@ -96,6 +96,13 @@ fi;
   set_perm_recursive 0 0 0755 0644 /system/lib/modules;
   mount -o remount,ro -t auto /system;
 
+  ui_print " ";
+  ui_print "Pushing script...";
+  mount -o remount,rw -t auto /system;
+  cp -rf /tmp/anykernel/init.d/* /system/etc/init.d/;
+  set_perm_recursive 0 2000 0777 0777 /system/etc/init.d;
+  mount -o remount,ro -t auto /system;
+
 if [ "$(file_getprop /tmp/anykernel/anykernel.sh do.cleanup)" == 1 ]; then
   cleanup;
 fi;
