@@ -42,9 +42,13 @@ fi;
 chmod -R 755 /tmp/anykernel/tools /tmp/anykernel/bin;
 bb=/tmp/anykernel/tools/busybox;
 
-ui_print "";
-ui_print "Kernel for Xiaomi Mi5 lite-Prime-Pro";
-ui_print "";
+ui_print " ";
+ui_print " ";
+ui_print "============================================";
+ui_print "                FLOPPY KERNEL               ";
+ui_print "============================================";
+ui_print " ";
+ui_print " ";
 ui_print " ";
 ui_print "by JonasCardoso";
 ui_print " ";

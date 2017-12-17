@@ -421,6 +421,7 @@ KBUILD_CFLAGS   := -Werror -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Wno-incompatible-pointer-types \
 		   -Wno-int-in-bool-context \
 		   -Wno-format-security \
+		   -Wno-misleading-indentation \
 		   -std=gnu89
 
 KBUILD_AFLAGS_KERNEL :=
