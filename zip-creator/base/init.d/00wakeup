@@ -1,0 +1,7 @@
+#!/system/bin/sh
+#Init.d Wakeup with screen off
+
+echo 1 > /sys/devices/soc/soc:fpc_fpc1020/enable_wakeup
+
+echo "XDA @JonasCardoso"
+echo "Executed on $(date +"%d-%m-%Y %r" )

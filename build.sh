@@ -211,6 +211,10 @@ then
 		echo "${variant}" >> ${zipdirout}/device.prop
 		echo "${release}" >> ${zipdirout}/device.prop
 
+		mkdir ${zipdirout}/modules
+		find . -name *.ko | xargs cp -a --target-directory=${zipdirout}/modules/ &> /dev/null
+		${CROSS_COMPILE}strip --strip-unneeded ${zipdirout}/modules/*.ko
+
 		cd ${zipdirout}
 		zip -r ${zipfile} * -x .gitignore &> /dev/null
 		cd ..
@@ -344,7 +348,7 @@ elif [ -e build.sh ]; then
 	_r="Ready to do!"
 	# Main Variables
 	customkernel=FloppyKernel
-	romversion=HMP
+	romversion=MIUI
 	export ARCH=arm64
 
 	while true

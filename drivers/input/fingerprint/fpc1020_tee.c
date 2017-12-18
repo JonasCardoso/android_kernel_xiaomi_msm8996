@@ -51,6 +51,8 @@
 #endif
 
 #define FPC1020_NAME "fpc1020"
+/* Fingerprint sensor input key */
+#define FINGERPRINT_KEY 0x60
 
 #define FPC1020_RESET_LOW_US 1000
 #define FPC1020_RESET_HIGH1_US 100
@@ -158,10 +160,10 @@ static void input_disconnect(struct input_handle *handle)
 	kfree(handle);
 }
 
-static const struct input_device_id ids[] = {
+static const struct input_device_id cpu_fp_ids[] = {
 	{
 		.flags = INPUT_DEVICE_ID_MATCH_EVBIT,
-		.evbit = { BIT_MASK(EV_KEY) },
+		.keybit = { BIT_MASK(FINGERPRINT_KEY) },
 	},
 	{ },
 };
@@ -607,13 +609,13 @@ static int fpc1020_tee_probe(struct platform_device *pdev)
 		enable_irq_wake(gpio_to_irq(fpc1020->irq_gpio));
 	}
 
-	fpc1020->report_key_events = false;
+	fpc1020->report_key_events = true;
 
 	fpc1020->input_handler.filter = input_filter;
 	fpc1020->input_handler.connect = input_connect;
 	fpc1020->input_handler.disconnect = input_disconnect;
 	fpc1020->input_handler.name = FPC1020_NAME;
-	fpc1020->input_handler.id_table = ids;
+	fpc1020->input_handler.id_table = cpu_fp_ids;
 	rc = input_register_handler(&fpc1020->input_handler);
 	if (rc) {
 		dev_err(dev, "failed to register key handler\n");
