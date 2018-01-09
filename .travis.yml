@@ -65,7 +65,7 @@ script:
 # Travis CI Script by Jonas Cardoso aka JonasCardoso <jonascard60@gmail.com>
 # Toolchain 
 - export ntoolchainbranch="master"
-- git clone --depth=50 -b "${ntoolchainbranch}" "https://bitbucket.org/jonascardoso/toolchain_aarch64" "../Toolchain"
+- git clone -b "${ntoolchainbranch}" "https://bitbucket.org/jonascardoso/toolchain_aarch64" "../Toolchain"
 #
 # This will call build.sh with following parameters inside ${nbasebuildsh}:
 #
