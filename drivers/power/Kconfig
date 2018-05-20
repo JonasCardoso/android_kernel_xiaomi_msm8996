@@ -616,12 +616,6 @@ config MSM_BCL_PERIPHERAL_CTL
 	  provides routines to configure and monitor the BCL
 	  PMIC peripheral.
 
-config CHARGE_CONTROL
-	bool "Charge controller for msm arch"
-	help
-	  Say Y here to enable charge control interface.
-	  You will be able to manipulate various charging controls.
-
 source "drivers/power/reset/Kconfig"
 
 endif # POWER_SUPPLY

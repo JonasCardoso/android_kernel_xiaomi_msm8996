@@ -70,3 +70,4 @@ obj-$(CONFIG_USB_EXT_TYPE_C_TI)		+= type-c-ti.o
 obj-$(CONFIG_QPNP_MISC) 	+= qpnp-misc.o
 obj-$(CONFIG_TYPEC_DRIVER) += type-c/
 obj-$(CONFIG_TSPDRV) += drv2604.o
+obj-$(CONFIG_FORCE_FAST_CHARGE) += fastchg.o
