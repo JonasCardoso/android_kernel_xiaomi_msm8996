@@ -40,7 +40,7 @@ setprop() {
 	fi
 }
 
-enabled=true
+enabled=false
 if [ "$enabled" = true ] ; then
 {
 	. "$env"
