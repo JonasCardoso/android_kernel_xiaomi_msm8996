@@ -54,20 +54,19 @@ obj-$(CONFIG_LATTICE_ECP3_CONFIG)	+= lattice-ecp3-config.o
 obj-$(CONFIG_SRAM)		+= sram.o
 obj-y				+= mic/
 obj-$(CONFIG_GENWQE)		+= genwqe/
-obj-$(CONFIG_QSEECOM) 		+= qseecom.o
-obj-$(CONFIG_HDCP_QSEECOM) 	+= hdcp.o
+obj-$(CONFIG_QSEECOM) += qseecom.o
+obj-$(CONFIG_HDCP_QSEECOM) += hdcp.o
 ifdef CONFIG_COMPAT
-obj-$(CONFIG_QSEECOM) 		+= compat_qseecom.o
+obj-$(CONFIG_QSEECOM) += compat_qseecom.o
 endif
 obj-$(CONFIG_ECHO)		+= echo/
 obj-$(CONFIG_VEXPRESS_SYSCFG)	+= vexpress-syscfg.o
 obj-$(CONFIG_CXL_BASE)		+= cxl/
-obj-$(CONFIG_UID_CPUTIME) 	+= uid_cputime.o
+obj-$(CONFIG_UID_CPUTIME) += uid_cputime.o
 obj-y				+= qcom/
-obj-$(CONFIG_TI_DRV2667) 	+= ti_drv2667.o
+obj-$(CONFIG_TI_DRV2667) += ti_drv2667.o
 obj-$(CONFIG_USB_EXT_TYPE_C_PERICOM)	+= type-c-pericom.o
 obj-$(CONFIG_USB_EXT_TYPE_C_TI)		+= type-c-ti.o
 obj-$(CONFIG_QPNP_MISC) 	+= qpnp-misc.o
 obj-$(CONFIG_TYPEC_DRIVER) += type-c/
 obj-$(CONFIG_TSPDRV) += drv2604.o
-obj-$(CONFIG_FORCE_FAST_CHARGE) += fastchg.o
